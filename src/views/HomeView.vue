@@ -1,38 +1,51 @@
 <template>
   <div class="home">
     Home
-    <p ref="p">{{ ninjaOne.name }} - {{ ninjaOne.age }}</p>
-    <button @click="updateNinjaOne">Update ninja one</button>
-    <p> {{ ninjaTwo.name }} - {{  ninjaTwo.age }}</p>
-    <button @click="updateNinjaTwo">Updatae ninja2</button>
+    <input type="text" v-model="search">
+    <p>searchterm: {{ search }}</p>
+    <div v-for="name in matchingNames" :key="name">
+      {{ name }}
+    </div>
+
+    <button @click="handleClick">Stop watching</button>
+    
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 
-import { ref, reactive } from 'vue'
+import { ref, computed, watch, watchEffect } from 'vue'
 
 export default {
   name: 'HomeView',
   setup() {
+    const search = ref('')
+    const names = ref(['mario', 'yoshi', 'koopa', 'bowser'])
 
-    const ninjaOne = ref({ name: 'mario', age: 30 })
-    const ninjaTwo = reactive({ name: "luigi", age: 35 })
 
-    const nameOne = ref('mario')
-    const nameTwo = reactive('luigi')
+    // Whenever search changes
+    const stopWatch = watch(search, () => {
+      console.log('watched')
+    })
 
-    const updateNinjaOne = () => {
-      ninjaOne.value.age = 40
+
+    // Runs initially, and watches any dependencies inside of it (search.value)
+    const stopEffect = watchEffect(() => {
+      console.log("watchEffect", search.value)
+    })
+    
+    const matchingNames = computed(() => {
+      return names.value.filter((name) => name.includes(search.value))
+    })
+
+    const handleClick = () => {
+      // Stops it from watching
+      stopWatch()
+      stopEffect()
     }
 
-    const updateNinjaTwo = () => {
-      ninjaTwo.age = 40
-      nameTwo = 'mario'
-    }
-
-    return { ninjaOne, updateNinjaOne, ninjaTwo, updateNinjaTwo, nameTwo }
+    return { matchingNames, search, handleClick }
   }
   
   
