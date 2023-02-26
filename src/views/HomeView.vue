@@ -1,35 +1,38 @@
 <template>
   <div class="home">
     Home
-    <p ref="p">name {{ name }} age {{ age }}</p>
-    <button @click="handleClick">click</button>
-    <button @click="age++">Add1 to age</button>
-    <input type="text" v-model="name"> <!-- v-model implements a two-way binding-->
+    <p ref="p">{{ ninjaOne.name }} - {{ ninjaOne.age }}</p>
+    <button @click="updateNinjaOne">Update ninja one</button>
+    <p> {{ ninjaTwo.name }} - {{  ninjaTwo.age }}</p>
+    <button @click="updateNinjaTwo">Updatae ninja2</button>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 
 export default {
   name: 'HomeView',
   setup() {
 
-    const name = ref('mario') //ref's are reactive values
-    const age = ref(30)
-    
-    const handleClick = () => {
-      name.value = 'luigi' //makes it reactive
+    const ninjaOne = ref({ name: 'mario', age: 30 })
+    const ninjaTwo = reactive({ name: "luigi", age: 35 })
+
+    const nameOne = ref('mario')
+    const nameTwo = reactive('luigi')
+
+    const updateNinjaOne = () => {
+      ninjaOne.value.age = 40
     }
 
-    return { name, age, handleClick }
-  },
-  data() {
-    return {
-      age: 40
+    const updateNinjaTwo = () => {
+      ninjaTwo.age = 40
+      nameTwo = 'mario'
     }
+
+    return { ninjaOne, updateNinjaOne, ninjaTwo, updateNinjaTwo, nameTwo }
   }
   
   
